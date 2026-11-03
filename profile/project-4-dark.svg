@@ -13,9 +13,9 @@ text{font-family:'Geist Pixel Square',ui-monospace,monospace}
 <rect x="24.5" y="16.5" width="399" height="199" fill="none" stroke="#333333"/>
 <text x="32" y="254" font-size="12" class="accent" text-anchor="start" letter-spacing="1.2">04</text>
 <text x="58" y="254" font-size="12" class="muted" text-anchor="start" letter-spacing="1.2">PYTHON · 2026-07-18</text>
-<text x="31" y="290" font-size="28" class="text" text-anchor="start">chunk-lab</text>
-<text x="32" y="318" font-size="15" class="subtle" text-anchor="start">See and evaluate RAG chunking strategies on your</text>
-<text x="32" y="339" font-size="15" class="subtle" text-anchor="start">own data. Local, offline, no API keys.</text>
+<text x="31" y="288" font-size="26" class="text" text-anchor="start">chunk-lab</text>
+<text x="32" y="314" font-size="15" class="subtle" text-anchor="start">See and evaluate RAG chunking strategies on your</text>
+<text x="32" y="335" font-size="15" class="subtle" text-anchor="start">own data. Local, offline, no API keys.</text>
 <rect x="32" y="368" width="108" height="32" fill="#ff4b4b"/>
 <text x="48" y="389" font-size="14" class="on-brand" text-anchor="start">Visit site ↗</text>
 </svg>

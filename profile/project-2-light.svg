@@ -13,10 +13,10 @@ text{font-family:'Geist Pixel Square',ui-monospace,monospace}
 <rect x="24.5" y="16.5" width="399" height="199" fill="none" stroke="#d8d3d1"/>
 <text x="32" y="254" font-size="12" class="accent" text-anchor="start" letter-spacing="1.2">02</text>
 <text x="58" y="254" font-size="12" class="muted" text-anchor="start" letter-spacing="1.2">TYPESCRIPT · 2026-11-02</text>
-<text x="31" y="290" font-size="28" class="text" text-anchor="start">jlog</text>
-<text x="32" y="318" font-size="15" class="subtle" text-anchor="start">Open-source job application tracker. Auto-captures</text>
-<text x="32" y="339" font-size="15" class="subtle" text-anchor="start">applications from LinkedIn, Greenhouse and Lever,</text>
-<text x="32" y="360" font-size="15" class="subtle" text-anchor="start">then builds a tailored CV.</text>
+<text x="31" y="288" font-size="26" class="text" text-anchor="start">jlog</text>
+<text x="32" y="314" font-size="15" class="subtle" text-anchor="start">Open-source job application tracker. Auto-captures</text>
+<text x="32" y="335" font-size="15" class="subtle" text-anchor="start">applications from LinkedIn, Greenhouse and Lever,</text>
+<text x="32" y="356" font-size="15" class="subtle" text-anchor="start">then builds a tailored CV.</text>
 <rect x="32" y="368" width="108" height="32" fill="#4a74d9"/>
 <text x="48" y="389" font-size="14" class="on-brand" text-anchor="start">Visit site ↗</text>
 </svg>

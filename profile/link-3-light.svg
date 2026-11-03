@@ -7,6 +7,6 @@ text{font-family:'Geist Pixel Square',ui-monospace,monospace}
 .pixel{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes pulse{50%{opacity:.2}}.pulse{animation:pulse 1.6s steps(1,end) infinite}
 @media (prefers-reduced-motion:reduce){.pulse{animation:none}}</style>
-<rect x="0.5" y="0.5" width="219" height="59" fill="#fcf9f8" stroke="#d8d3d1"/>
-<text x="110" y="36" font-size="16" class="text" text-anchor="middle">linkedin ↗</text>
+<rect x="0.5" y="0.5" width="219" height="59" fill="#d4e4d7" stroke="#fcf9f8"/>
+<text x="110" y="36" font-size="16" class="chip-text" text-anchor="middle">linkedin ↗</text>
 </svg>
