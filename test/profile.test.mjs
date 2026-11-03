@@ -3,7 +3,7 @@ import { describe, it } from 'node:test';
 import { ditherMask } from '../scripts/lib/dither.mjs';
 import { growthField } from '../scripts/lib/growth-curve.mjs';
 import { renderReadme } from '../scripts/lib/readme.mjs';
-import { findOgImage, parseFeed } from '../scripts/lib/sources.mjs';
+import { parseFeed } from '../scripts/lib/sources.mjs';
 import { escapeXml, measure, truncate, wrapText } from '../scripts/lib/text.mjs';
 
 const sum = (mask) => mask.reduce((total, isInk) => total + isInk, 0);
@@ -50,17 +50,6 @@ describe('parseFeed', () => {
 
   it('stops at the requested count', () => {
     assert.equal(parseFeed(xml, 1).length, 1);
-  });
-});
-
-describe('findOgImage', () => {
-  it('resolves a relative og:image against the page', () => {
-    const html = '<meta property="og:image" content="/og.png?a=1&amp;b=2">';
-    assert.equal(findOgImage(html, 'https://jlog.ai/x'), 'https://jlog.ai/og.png?a=1&b=2');
-  });
-
-  it('returns null when the page has none', () => {
-    assert.equal(findOgImage('<title>none</title>', 'https://bhargav.dev'), null);
   });
 });
 

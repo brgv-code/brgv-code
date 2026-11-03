@@ -13,7 +13,7 @@ import {
   statusStrip,
 } from './lib/panels.mjs';
 import { renderReadme } from './lib/readme.mjs';
-import { fetchCover, fetchPosts, fetchRepo } from './lib/sources.mjs';
+import { fetchPosts, fetchRepo } from './lib/sources.mjs';
 
 const root = new URL('../', import.meta.url);
 const outputDir = new URL('profile/', root);
@@ -48,18 +48,6 @@ async function loadProjects(config) {
   );
 }
 
-async function coverFrom(pageUrl) {
-  if (!pageUrl) return null;
-  const image = await fetchCover(pageUrl);
-  return image && coverDataUri(image, [0, 0, 1, 1], CARD.bannerWidth, CARD.bannerHeight);
-}
-
-async function withCovers(items, pageUrlOf) {
-  return Promise.all(
-    items.map(async (item) => ({ ...item, coverUri: await coverFrom(pageUrlOf(item)) })),
-  );
-}
-
 /** Lays cards out two per README row, gutter on the inner edge. */
 function cardRows(cards) {
   const panels = cards.map((panel, index) => ({
@@ -90,10 +78,9 @@ async function build() {
   const config = JSON.parse(await readFile(new URL('profile.config.json', root), 'utf8'));
   const { themes, profile, status, writing, community, links } = config;
 
-  const [projects, posts, communities] = await Promise.all([
+  const [projects, posts] = await Promise.all([
     loadProjects(config),
-    fetchPosts(writing.feed, writing.count).then((items) => withCovers(items, (post) => post.url)),
-    withCovers(community.entries, (entry) => entry.cover),
+    fetchPosts(writing.feed, writing.count),
   ]);
   const artWidth = HEADER.width / DOT;
   const artHeight = HEADER.height / DOT;
@@ -169,7 +156,6 @@ async function build() {
           cta: writing.cta,
           accent: theme.accent,
           ctaTone: 'on-accent',
-          coverUri: post.coverUri,
         }),
       })),
     ),
@@ -183,7 +169,7 @@ async function build() {
       },
     ],
     ...cardRows(
-      communities.map((entry, index) => ({
+      community.entries.map((entry, index) => ({
         file: `community-${index + 1}`,
         alt: `${entry.title}: ${entry.description} ${entry.cta}`,
         href: entry.url,
@@ -195,7 +181,6 @@ async function build() {
           cta: entry.cta,
           accent: entry.accent ?? theme.accent,
           ctaTone: entry.accent ? 'on-brand' : 'on-accent',
-          coverUri: entry.coverUri,
         }),
       })),
     ),

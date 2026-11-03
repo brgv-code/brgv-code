@@ -3,7 +3,9 @@ import { measure, wrapText } from './text.mjs';
 
 export const HEADER = { width: 880, height: 280 };
 // Two cards share a README row; the gutter sits on the inner edge so outer edges line up.
-export const CARD = { width: 440, height: 420, gutter: 8, bannerWidth: 400, bannerHeight: 200 };
+export const CARD = { width: 440, gutter: 8, bannerWidth: 400, bannerHeight: 200 };
+// Cards with a cover image are taller; text-only cards keep the CTA at the same distance.
+const CARD_HEIGHT = { withCover: 420, textOnly: 214 };
 const PAD = 40;
 
 export function header({ profile, theme, artUri }) {
@@ -64,37 +66,7 @@ export function sectionLabel({ index, title, action = '', theme }) {
   return svgDocument({ width, height, theme, title: title.toLowerCase(), body: body.join('\n') });
 }
 
-/** Draws the cover: an image when there is one, otherwise a poster in the accent color. */
-function cover({ x, y, width, height, coverUri, accent, title, meta, theme }) {
-  if (coverUri) {
-    return [
-      imageElement({ x, y, width, height, href: coverUri }),
-      frameRect(x, y, width, height, theme),
-    ];
-  }
-  return [
-    fillRect(x, y, width, height, accent),
-    textElement({
-      x: x + width / 2,
-      y: y + height / 2 + 14,
-      size: 40,
-      tone: 'on-brand',
-      content: title,
-      anchor: 'middle',
-    }),
-    textElement({
-      x: x + width / 2,
-      y: y + height / 2 + 44,
-      size: 13,
-      tone: 'on-brand',
-      content: meta.toUpperCase(),
-      anchor: 'middle',
-      tracking: 2,
-    }),
-  ];
-}
-
-/** A grid card for a project, a post or a community. Two cards share a README row. */
+/** A grid card for a project, a post or a community. Without coverUri it is text only. */
 export function card({
   index,
   meta,
@@ -107,13 +79,14 @@ export function card({
   theme,
   coverUri,
 }) {
-  const { width, height, gutter, bannerWidth, bannerHeight } = CARD;
+  const { width, gutter, bannerWidth, bannerHeight } = CARD;
+  const height = coverUri ? CARD_HEIGHT.withCover : CARD_HEIGHT.textOnly;
   const panelX = side === 'left' ? 0 : gutter;
   const panelWidth = width - gutter;
   const inset = 16;
   const textX = panelX + 24;
   const textWidth = panelWidth - 48;
-  const textTop = inset + bannerHeight;
+  const textTop = coverUri ? inset + bannerHeight : 0;
   const fitsOneLine = measure(title, 26) <= textWidth;
   const titleSize = fitsOneLine ? 26 : 21;
   const titleLines = fitsOneLine ? [title] : wrapText(title, textWidth, titleSize, 2);
@@ -123,17 +96,18 @@ export function card({
   const body = [
     `<rect x="${panelX + 0.5}" y="0.5" width="${panelWidth - 1}" height="${height - 1}" fill="${theme.panel}" stroke="${theme.line}"/>`,
     fillRect(panelX, 0, panelWidth, 4, accent),
-    ...cover({
-      x: panelX + inset,
-      y: inset,
-      width: bannerWidth,
-      height: bannerHeight,
-      coverUri,
-      accent,
-      title,
-      meta,
-      theme,
-    }),
+    ...(coverUri
+      ? [
+          imageElement({
+            x: panelX + inset,
+            y: inset,
+            width: bannerWidth,
+            height: bannerHeight,
+            href: coverUri,
+          }),
+          frameRect(panelX + inset, inset, bannerWidth, bannerHeight, theme),
+        ]
+      : []),
     textElement({
       x: textX,
       y: textTop + 38,
