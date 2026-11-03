@@ -59,3 +59,19 @@ export async function fetchRepo(fullName, token) {
     url: repo.homepage || repo.html_url,
   };
 }
+
+/** The page's og:image as an absolute URL, or null when the page declares none. */
+export function findOgImage(html, pageUrl) {
+  const tag = html.match(/<meta[^>]+property=["']og:image["'][^>]*>/i)?.[0];
+  const content = tag?.match(/content=["']([^"']+)["']/i)?.[1];
+  return content ? new URL(decodeEntities(content), pageUrl).href : null;
+}
+
+/** Fetches the social preview image of a page, or null when it has none. */
+export async function fetchCover(pageUrl) {
+  const page = await fetchOk(pageUrl);
+  const imageUrl = findOgImage(await page.text(), pageUrl);
+  if (!imageUrl) return null;
+  const image = await fetchOk(imageUrl);
+  return Buffer.from(await image.arrayBuffer());
+}

@@ -4,7 +4,7 @@ import sharp from 'sharp';
  * Crops [left, top, width, height] (fractions of the source) and encodes it for a width x height
  * slot at up to 2x density, so UI text stays sharp on retina screens without upscaling.
  */
-export async function screenshotDataUri(source, crop, width, height) {
+export async function coverDataUri(source, crop, width, height) {
   const image = sharp(source);
   const { width: sourceWidth, height: sourceHeight } = await image.metadata();
   const [left, top, cropWidth, cropHeight] = crop;

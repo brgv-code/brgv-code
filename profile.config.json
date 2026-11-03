@@ -43,8 +43,9 @@
   "projectCta": "Visit site ↗",
   "writing": {
     "feed": "https://bhargav.dev/rss.xml",
-    "count": 3,
-    "url": "https://bhargav.dev/writing"
+    "count": 4,
+    "url": "https://bhargav.dev/writing",
+    "cta": "Read post →"
   },
   "community": {
     "url": "https://bhargav.dev/community",
@@ -53,13 +54,17 @@
         "title": "Berlin AI Meetup",
         "meta": "HOST · MONTHLY",
         "description": "A monthly room for people building with AI. Two talks, a demo or two.",
-        "url": "https://luma.com/berlin-ai"
+        "url": "https://luma.com/berlin-ai",
+        "cover": "https://luma.com/berlin-ai",
+        "cta": "Join on Luma ↗"
       },
       {
         "title": "r/BerlinAI",
         "meta": "EVERY MONDAY",
         "description": "The AI events happening in Berlin that week, in one post.",
-        "url": "https://www.reddit.com/r/BerlinAI/"
+        "url": "https://www.reddit.com/r/BerlinAI/",
+        "accent": "#ff4500",
+        "cta": "Join r/BerlinAI ↗"
       }
     ]
   },

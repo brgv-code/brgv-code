@@ -9,7 +9,8 @@ scripts, never the output.
 |---|---|
 | Header, status strip, contact links | `profile.config.json` |
 | Project cards | GitHub API (description, language, last push, homepage), sorted by last push, in a 2x2 grid. Each shows its `screenshot` (a 1920x1080 capture in `assets/screenshots/`, cropped by `crop` as `[left, top, width, height]` fractions) and uses its `accent` for the top stripe and the `projectCta` button |
-| Writing | The newest posts in `writing.feed` (bhargav.dev RSS) |
+| Writing | The newest `writing.count` posts in `writing.feed` (bhargav.dev RSS), as cards with each post's og:image |
+| Community | `community.entries`; `cover` names a page whose og:image becomes the cover, and an entry without one gets a poster in its `accent` |
 | Header chart | `scripts/lib/growth-curve.mjs`, generated, so it only changes when that code does |
 
 Colors mirror the bhargav.dev design tokens and live under `themes` in the config. Every panel

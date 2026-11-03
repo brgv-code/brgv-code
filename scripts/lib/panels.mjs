@@ -1,5 +1,5 @@
 import { fillRect, frameRect, imageElement, panelRect, svgDocument, textElement } from './svg.mjs';
-import { measure, truncate, wrapText } from './text.mjs';
+import { measure, wrapText } from './text.mjs';
 
 export const HEADER = { width: 880, height: 280 };
 // Two cards share a README row; the gutter sits on the inner edge so outer edges line up.
@@ -64,7 +64,49 @@ export function sectionLabel({ index, title, action = '', theme }) {
   return svgDocument({ width, height, theme, title: title.toLowerCase(), body: body.join('\n') });
 }
 
-export function projectCard({ repo, accent, cta, position, side, theme, bannerUri }) {
+/** Draws the cover: an image when there is one, otherwise a poster in the accent color. */
+function cover({ x, y, width, height, coverUri, accent, title, meta, theme }) {
+  if (coverUri) {
+    return [
+      imageElement({ x, y, width, height, href: coverUri }),
+      frameRect(x, y, width, height, theme),
+    ];
+  }
+  return [
+    fillRect(x, y, width, height, accent),
+    textElement({
+      x: x + width / 2,
+      y: y + height / 2 + 14,
+      size: 40,
+      tone: 'on-brand',
+      content: title,
+      anchor: 'middle',
+    }),
+    textElement({
+      x: x + width / 2,
+      y: y + height / 2 + 44,
+      size: 13,
+      tone: 'on-brand',
+      content: meta.toUpperCase(),
+      anchor: 'middle',
+      tracking: 2,
+    }),
+  ];
+}
+
+/** A grid card for a project, a post or a community. Two cards share a README row. */
+export function card({
+  index,
+  meta,
+  title,
+  description,
+  cta,
+  accent,
+  ctaTone,
+  side,
+  theme,
+  coverUri,
+}) {
   const { width, height, gutter, bannerWidth, bannerHeight } = CARD;
   const panelX = side === 'left' ? 0 : gutter;
   const panelWidth = width - gutter;
@@ -72,29 +114,32 @@ export function projectCard({ repo, accent, cta, position, side, theme, bannerUr
   const textX = panelX + 24;
   const textWidth = panelWidth - 48;
   const textTop = inset + bannerHeight;
-  const meta = [repo.language, repo.pushedAt.slice(0, 10)]
-    .filter(Boolean)
-    .join(' · ')
-    .toUpperCase();
-  const description = wrapText(repo.description, textWidth, 15, 3);
+  const fitsOneLine = measure(title, 26) <= textWidth;
+  const titleSize = fitsOneLine ? 26 : 21;
+  const titleLines = fitsOneLine ? [title] : wrapText(title, textWidth, titleSize, 2);
+  const titleBottom = textTop + 72 + (titleLines.length - 1) * 26;
+  const descriptionLines = wrapText(description, textWidth, 15, 4 - titleLines.length);
   const ctaWidth = Math.ceil(measure(cta, 14)) + 32;
   const body = [
     `<rect x="${panelX + 0.5}" y="0.5" width="${panelWidth - 1}" height="${height - 1}" fill="${theme.panel}" stroke="${theme.line}"/>`,
     fillRect(panelX, 0, panelWidth, 4, accent),
-    imageElement({
+    ...cover({
       x: panelX + inset,
       y: inset,
       width: bannerWidth,
       height: bannerHeight,
-      href: bannerUri,
+      coverUri,
+      accent,
+      title,
+      meta,
+      theme,
     }),
-    frameRect(panelX + inset, inset, bannerWidth, bannerHeight, theme),
     textElement({
       x: textX,
       y: textTop + 38,
       size: 12,
       tone: 'accent',
-      content: String(position).padStart(2, '0'),
+      content: index,
       tracking: 1.2,
     }),
     textElement({
@@ -102,74 +147,49 @@ export function projectCard({ repo, accent, cta, position, side, theme, bannerUr
       y: textTop + 38,
       size: 12,
       tone: 'muted',
-      content: meta,
+      content: meta.toUpperCase(),
       tracking: 1.2,
     }),
-    textElement({ x: textX - 1, y: textTop + 74, size: 28, tone: 'text', content: repo.name }),
-    ...description.map((line, lineIndex) =>
+    ...titleLines.map((line, lineIndex) =>
+      textElement({
+        x: textX - 1,
+        y: textTop + 72 + lineIndex * 26,
+        size: titleSize,
+        tone: 'text',
+        content: line,
+      }),
+    ),
+    ...descriptionLines.map((line, lineIndex) =>
       textElement({
         x: textX,
-        y: textTop + 102 + lineIndex * 21,
+        y: titleBottom + 26 + lineIndex * 21,
         size: 15,
         tone: 'subtle',
         content: line,
       }),
     ),
     fillRect(textX, height - 52, ctaWidth, 32, accent),
-    textElement({ x: textX + 16, y: height - 31, size: 14, tone: 'on-brand', content: cta }),
+    textElement({ x: textX + 16, y: height - 31, size: 14, tone: ctaTone, content: cta }),
   ];
-  const title = `${repo.name}: ${repo.description} ${cta}`;
-  return svgDocument({ width, height, theme, title, body: body.join('\n') });
-}
-
-/** One linked line of a list: a post, or a community. */
-export function listRow({ title, meta, description, theme }) {
-  const width = 880;
-  const height = 88;
-  const chipWidth = Math.ceil(measure(meta, 12, 1.2)) + 20;
-  const titleX = PAD + chipWidth + 14;
-  const textRight = width - PAD - 60;
-  const body = [
-    panelRect(width, height, theme),
-    fillRect(PAD, 20, chipWidth, 22, theme.chip),
-    textElement({ x: PAD + 10, y: 35, size: 12, tone: 'chip-text', content: meta, tracking: 1.2 }),
-    textElement({
-      x: titleX,
-      y: 37,
-      size: 19,
-      tone: 'text',
-      content: truncate(title, textRight - titleX, 19),
-    }),
-    textElement({
-      x: PAD,
-      y: 66,
-      size: 14,
-      tone: 'muted',
-      content: truncate(description, textRight - PAD, 14),
-    }),
-    fillRect(width - PAD - 36, 26, 36, 36, theme.accent),
-    textElement({
-      x: width - PAD - 18,
-      y: 50,
-      size: 18,
-      tone: 'on-accent',
-      content: '→',
-      anchor: 'middle',
-    }),
-  ];
-  return svgDocument({ width, height, theme, title, body: body.join('\n') });
+  return svgDocument({
+    width,
+    height,
+    theme,
+    title: `${title}: ${description} ${cta}`,
+    body: body.join('\n'),
+  });
 }
 
 export function linkButton({ link, theme }) {
   const width = 220;
   const height = 60;
   const body = [
-    panelRect(width, height, theme),
+    `<rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" fill="${theme.chip}" stroke="${theme.panel}"/>`,
     textElement({
       x: width / 2,
       y: 36,
       size: 16,
-      tone: 'text',
+      tone: 'chip-text',
       content: `${link.label} ↗`,
       anchor: 'middle',
     }),

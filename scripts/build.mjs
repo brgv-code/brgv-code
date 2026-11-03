@@ -1,20 +1,19 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { coverDataUri } from './lib/cover.mjs';
 import { ditherMask, maskToPngDataUri } from './lib/dither.mjs';
 import { growthField } from './lib/growth-curve.mjs';
 import {
   CARD,
   HEADER,
+  card,
   header,
   linkButton,
-  listRow,
-  projectCard,
   sectionLabel,
   statusStrip,
 } from './lib/panels.mjs';
 import { renderReadme } from './lib/readme.mjs';
-import { screenshotDataUri } from './lib/screenshot.mjs';
-import { fetchPosts, fetchRepo } from './lib/sources.mjs';
+import { fetchCover, fetchPosts, fetchRepo } from './lib/sources.mjs';
 
 const root = new URL('../', import.meta.url);
 const outputDir = new URL('profile/', root);
@@ -40,18 +39,35 @@ async function loadProjects(config) {
         fetchRepo(project.repo, process.env.GITHUB_TOKEN),
         readFile(new URL(project.screenshot, root)),
       ]);
-      const bannerUri = await screenshotDataUri(
-        image,
-        project.crop,
-        CARD.bannerWidth,
-        CARD.bannerHeight,
-      );
-      return { repo, bannerUri, accent: project.accent };
+      const coverUri = await coverDataUri(image, project.crop, CARD.bannerWidth, CARD.bannerHeight);
+      return { repo, coverUri, accent: project.accent };
     }),
   );
   return projects.sort(
     (projectA, projectB) => Date.parse(projectB.repo.pushedAt) - Date.parse(projectA.repo.pushedAt),
   );
+}
+
+async function coverFrom(pageUrl) {
+  if (!pageUrl) return null;
+  const image = await fetchCover(pageUrl);
+  return image && coverDataUri(image, [0, 0, 1, 1], CARD.bannerWidth, CARD.bannerHeight);
+}
+
+async function withCovers(items, pageUrlOf) {
+  return Promise.all(
+    items.map(async (item) => ({ ...item, coverUri: await coverFrom(pageUrlOf(item)) })),
+  );
+}
+
+/** Lays cards out two per README row, gutter on the inner edge. */
+function cardRows(cards) {
+  const panels = cards.map((panel, index) => ({
+    ...panel,
+    render: (theme) =>
+      card({ ...panel.card(theme), side: index % 2 === 0 ? 'left' : 'right', theme }),
+  }));
+  return pairs(panels);
 }
 
 function pairs(panels) {
@@ -74,9 +90,10 @@ async function build() {
   const config = JSON.parse(await readFile(new URL('profile.config.json', root), 'utf8'));
   const { themes, profile, status, writing, community, links } = config;
 
-  const [projects, posts] = await Promise.all([
+  const [projects, posts, communities] = await Promise.all([
     loadProjects(config),
-    fetchPosts(writing.feed, writing.count),
+    fetchPosts(writing.feed, writing.count).then((items) => withCovers(items, (post) => post.url)),
+    withCovers(community.entries, (entry) => entry.cover),
   ]);
   const artWidth = HEADER.width / DOT;
   const artHeight = HEADER.height / DOT;
@@ -113,21 +130,21 @@ async function build() {
           sectionLabel({ index: '01', title: 'PROJECTS', action: 'all repos →', theme }),
       },
     ],
-    ...pairs(
-      projects.map(({ repo, bannerUri, accent }, index) => ({
+    ...cardRows(
+      projects.map(({ repo, coverUri, accent }, index) => ({
         file: `project-${index + 1}`,
         alt: `${repo.name}: ${repo.description} ${config.projectCta}`,
         href: repo.url,
-        render: (theme) =>
-          projectCard({
-            repo,
-            accent,
-            cta: config.projectCta,
-            position: index + 1,
-            side: index % 2 === 0 ? 'left' : 'right',
-            theme,
-            bannerUri,
-          }),
+        card: () => ({
+          index: String(index + 1).padStart(2, '0'),
+          meta: [repo.language, repo.pushedAt.slice(0, 10)].filter(Boolean).join(' · '),
+          title: repo.name,
+          description: repo.description,
+          cta: config.projectCta,
+          accent,
+          ctaTone: 'on-brand',
+          coverUri,
+        }),
       })),
     ),
     [
@@ -139,14 +156,23 @@ async function build() {
           sectionLabel({ index: '02', title: 'WRITING', action: 'all writing →', theme }),
       },
     ],
-    ...posts.map((post, index) => [
-      {
+    ...cardRows(
+      posts.map((post, index) => ({
         file: `post-${index + 1}`,
-        alt: `${post.title} (${post.date})`,
+        alt: `${post.title} (${post.date}): ${post.description}`,
         href: post.url,
-        render: (theme) => listRow({ ...post, meta: post.date, theme }),
-      },
-    ]),
+        card: (theme) => ({
+          index: String(index + 1).padStart(2, '0'),
+          meta: post.date,
+          title: post.title,
+          description: post.description,
+          cta: writing.cta,
+          accent: theme.accent,
+          ctaTone: 'on-accent',
+          coverUri: post.coverUri,
+        }),
+      })),
+    ),
     [
       {
         file: 'label-community',
@@ -156,14 +182,23 @@ async function build() {
           sectionLabel({ index: '03', title: 'COMMUNITY', action: 'community →', theme }),
       },
     ],
-    ...community.entries.map((entry, index) => [
-      {
+    ...cardRows(
+      communities.map((entry, index) => ({
         file: `community-${index + 1}`,
-        alt: `${entry.title}: ${entry.description}`,
+        alt: `${entry.title}: ${entry.description} ${entry.cta}`,
         href: entry.url,
-        render: (theme) => listRow({ ...entry, theme }),
-      },
-    ]),
+        card: (theme) => ({
+          index: String(index + 1).padStart(2, '0'),
+          meta: entry.meta,
+          title: entry.title,
+          description: entry.description,
+          cta: entry.cta,
+          accent: entry.accent ?? theme.accent,
+          ctaTone: entry.accent ? 'on-brand' : 'on-accent',
+          coverUri: entry.coverUri,
+        }),
+      })),
+    ),
     [
       {
         file: 'label-contact',
