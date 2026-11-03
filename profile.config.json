@@ -1,0 +1,84 @@
+{
+  "username": "brgv-code",
+  "width": 880,
+  "profile": {
+    "name": "bhargav",
+    "label": "ENG · BERLIN",
+    "headline": "I build products and the growth engine behind them.",
+    "focus": "Applied AI, dev tools, SEO/AEO.",
+    "url": "https://bhargav.dev"
+  },
+  "status": {
+    "label": "OPEN TO NEW ROLES",
+    "detail": "Product engineering & growth · Berlin or remote",
+    "action": "cv.pdf ↓",
+    "url": "https://bhargav.dev/cv.pdf"
+  },
+  "projects": [
+    {
+      "repo": "open-aeo/open-aeo",
+      "banner": "https://bhargav.dev/images/projects/open-aeo/hero.webp",
+      "crop": [0.2, 0.18, 0.6, 0.62]
+    },
+    {
+      "repo": "brgv-code/jlog",
+      "banner": "https://bhargav.dev/images/projects/jlog/4-dashboard.webp",
+      "crop": [0.2, 0.03, 0.62, 0.62]
+    },
+    {
+      "repo": "brgv-code/lumen",
+      "banner": "https://readwithlumen.app/og.png",
+      "crop": [0, 0, 1, 1]
+    },
+    {
+      "repo": "brgv-code/chunk-lab",
+      "banner": "https://bhargav.dev/images/projects/chunk-lab/fig2-strategies-side-by-side.webp",
+      "crop": [0.02, 0.41, 0.52, 0.52]
+    }
+  ],
+  "writing": {
+    "feed": "https://bhargav.dev/rss.xml",
+    "count": 3,
+    "url": "https://bhargav.dev/writing"
+  },
+  "links": [
+    {
+      "label": "bhargav.dev",
+      "url": "https://bhargav.dev"
+    },
+    {
+      "label": "cv",
+      "url": "https://bhargav.dev/cv.pdf"
+    },
+    {
+      "label": "linkedin",
+      "url": "https://www.linkedin.com/in/bhargavbrgv/"
+    },
+    {
+      "label": "email",
+      "url": "mailto:hello@bhargav.dev"
+    }
+  ],
+  "themes": {
+    "light": {
+      "panel": "#fcf9f8",
+      "line": "#d8d3d1",
+      "text": "#323233",
+      "subtle": "#4a4a4b",
+      "muted": "#7a7a7c",
+      "ink": "#323233",
+      "paper": "#fcf9f8",
+      "live": "#3a9b66"
+    },
+    "dark": {
+      "panel": "#242424",
+      "line": "#333333",
+      "text": "#fcf9f8",
+      "subtle": "#c8c5c3",
+      "muted": "#7a7a7c",
+      "ink": "#c8c5c3",
+      "paper": "#242424",
+      "live": "#4db87a"
+    }
+  }
+}
