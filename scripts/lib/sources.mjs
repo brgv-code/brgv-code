@@ -59,8 +59,3 @@ export async function fetchRepo(fullName, token) {
     url: repo.homepage || repo.html_url,
   };
 }
-
-export async function fetchImage(url) {
-  const response = await fetchOk(url);
-  return Buffer.from(await response.arrayBuffer());
-}

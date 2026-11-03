@@ -14,7 +14,7 @@ import {
 } from './lib/panels.mjs';
 import { renderReadme } from './lib/readme.mjs';
 import { screenshotDataUri } from './lib/screenshot.mjs';
-import { fetchImage, fetchPosts, fetchRepo } from './lib/sources.mjs';
+import { fetchPosts, fetchRepo } from './lib/sources.mjs';
 
 const root = new URL('../', import.meta.url);
 const outputDir = new URL('profile/', root);
@@ -32,12 +32,13 @@ async function ditheredArt(gray, width, height, themes) {
   return Object.fromEntries(entries);
 }
 
+/** Most recently pushed first, so the grid leads with what is active. */
 async function loadProjects(config) {
-  return Promise.all(
+  const projects = await Promise.all(
     config.projects.map(async (project) => {
       const [repo, image] = await Promise.all([
         fetchRepo(project.repo, process.env.GITHUB_TOKEN),
-        fetchImage(project.banner),
+        readFile(new URL(project.screenshot, root)),
       ]);
       const bannerUri = await screenshotDataUri(
         image,
@@ -45,9 +46,18 @@ async function loadProjects(config) {
         CARD.bannerWidth,
         CARD.bannerHeight,
       );
-      return { repo, bannerUri };
+      return { repo, bannerUri, accent: project.accent };
     }),
   );
+  return projects.sort(
+    (projectA, projectB) => Date.parse(projectB.repo.pushedAt) - Date.parse(projectA.repo.pushedAt),
+  );
+}
+
+function pairs(panels) {
+  const rows = [];
+  for (let index = 0; index < panels.length; index += 2) rows.push(panels.slice(index, index + 2));
+  return rows;
 }
 
 async function writePanel(file, render, themes) {
@@ -103,14 +113,23 @@ async function build() {
           sectionLabel({ index: '01', title: 'PROJECTS', action: 'all repos →', theme }),
       },
     ],
-    ...projects.map(({ repo, bannerUri }, index) => [
-      {
+    ...pairs(
+      projects.map(({ repo, bannerUri, accent }, index) => ({
         file: `project-${index + 1}`,
-        alt: `${repo.name}: ${repo.description}`,
+        alt: `${repo.name}: ${repo.description} ${config.projectCta}`,
         href: repo.url,
-        render: (theme) => projectCard({ repo, position: index + 1, theme, bannerUri }),
-      },
-    ]),
+        render: (theme) =>
+          projectCard({
+            repo,
+            accent,
+            cta: config.projectCta,
+            position: index + 1,
+            side: index % 2 === 0 ? 'left' : 'right',
+            theme,
+            bannerUri,
+          }),
+      })),
+    ),
     [
       {
         file: 'label-writing',

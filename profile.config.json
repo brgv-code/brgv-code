@@ -17,25 +17,30 @@
   "projects": [
     {
       "repo": "open-aeo/open-aeo",
-      "banner": "https://bhargav.dev/images/projects/open-aeo/hero.webp",
-      "crop": [0.169, 0.148, 0.6625, 0.461]
+      "screenshot": "assets/screenshots/open-aeo.png",
+      "crop": [0, 0, 1, 0.889],
+      "accent": "#515fc6"
     },
     {
       "repo": "brgv-code/jlog",
-      "banner": "https://bhargav.dev/images/projects/jlog/4-dashboard.webp",
-      "crop": [0.2, 0.335, 0.792, 0.449]
+      "screenshot": "assets/screenshots/jlog.png",
+      "crop": [0, 0, 1, 0.889],
+      "accent": "#4a74d9"
     },
     {
       "repo": "brgv-code/lumen",
-      "banner": "https://readwithlumen.app/og.png",
-      "crop": [0, 0.175, 1, 0.673]
+      "screenshot": "assets/screenshots/lumen.png",
+      "crop": [0, 0, 1, 0.85],
+      "accent": "#ff6f1c"
     },
     {
       "repo": "brgv-code/chunk-lab",
-      "banner": "https://bhargav.dev/images/projects/chunk-lab/fig2-strategies-side-by-side.webp",
-      "crop": [0.025, 0.411, 0.75, 0.471]
+      "screenshot": "assets/screenshots/chunk-lab.png",
+      "crop": [0, 0, 1, 0.889],
+      "accent": "#ff4b4b"
     }
   ],
+  "projectCta": "Visit site ↗",
   "writing": {
     "feed": "https://bhargav.dev/rss.xml",
     "count": 3,
@@ -85,7 +90,11 @@
       "muted": "#7a7a7c",
       "ink": "#323233",
       "paper": "#fcf9f8",
-      "live": "#3a9b66"
+      "live": "#3a9b66",
+      "accent": "#1e5c3e",
+      "onAccent": "#fcf9f8",
+      "chip": "#d4e4d7",
+      "chipText": "#123524"
     },
     "dark": {
       "panel": "#242424",
@@ -95,7 +104,11 @@
       "muted": "#7a7a7c",
       "ink": "#c8c5c3",
       "paper": "#242424",
-      "live": "#4db87a"
+      "live": "#4db87a",
+      "accent": "#4db87a",
+      "onAccent": "#0b2318",
+      "chip": "#123524",
+      "chipText": "#9dc4a5"
     }
   }
 }

@@ -10,7 +10,8 @@ function style(theme) {
   return `@font-face{font-family:'Geist Pixel Square';src:url(data:font/woff2;base64,${fontBase64}) format('woff2')}
 text{font-family:'Geist Pixel Square',ui-monospace,monospace}
 .text{fill:${theme.text}}.subtle{fill:${theme.subtle}}.muted{fill:${theme.muted}}
-image{image-rendering:pixelated;image-rendering:crisp-edges}
+.accent{fill:${theme.accent}}.on-accent{fill:${theme.onAccent}}.chip-text{fill:${theme.chipText}}.on-brand{fill:#ffffff}
+.pixel{image-rendering:pixelated;image-rendering:crisp-edges}
 @keyframes pulse{50%{opacity:.2}}.pulse{animation:pulse 1.6s steps(1,end) infinite}
 @media (prefers-reduced-motion:reduce){.pulse{animation:none}}`;
 }
@@ -28,6 +29,10 @@ export function panelRect(width, height, theme) {
   return `<rect x="0.5" y="0.5" width="${width - 1}" height="${height - 1}" fill="${theme.panel}" stroke="${theme.line}"/>`;
 }
 
+export function fillRect(x, y, width, height, fill) {
+  return `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${fill}"/>`;
+}
+
 export function frameRect(x, y, width, height, theme) {
   return `<rect x="${x + 0.5}" y="${y + 0.5}" width="${width - 1}" height="${height - 1}" fill="none" stroke="${theme.line}"/>`;
 }
@@ -37,6 +42,7 @@ export function textElement({ x, y, size, tone, content, tracking = 0, anchor = 
   return `<text x="${x}" y="${y}" font-size="${size}" class="${tone}" text-anchor="${anchor}"${spacing}>${escapeXml(content)}</text>`;
 }
 
-export function imageElement({ x, y, width, height, href }) {
-  return `<image x="${x}" y="${y}" width="${width}" height="${height}" href="${href}" preserveAspectRatio="none"/>`;
+export function imageElement({ x, y, width, height, href, isPixelArt = false }) {
+  const pixel = isPixelArt ? ' class="pixel"' : '';
+  return `<image x="${x}" y="${y}" width="${width}" height="${height}" href="${href}" preserveAspectRatio="none"${pixel}/>`;
 }

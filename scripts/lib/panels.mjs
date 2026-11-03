@@ -1,16 +1,9 @@
-import { frameRect, imageElement, panelRect, svgDocument, textElement } from './svg.mjs';
+import { fillRect, frameRect, imageElement, panelRect, svgDocument, textElement } from './svg.mjs';
 import { measure, truncate, wrapText } from './text.mjs';
 
 export const HEADER = { width: 880, height: 280 };
-// The screenshot spans the card so product UI text stays near its native size.
-export const CARD = {
-  width: 880,
-  height: 470,
-  bannerX: 16,
-  bannerY: 16,
-  bannerWidth: 848,
-  bannerHeight: 300,
-};
+// Two cards share a README row; the gutter sits on the inner edge so outer edges line up.
+export const CARD = { width: 440, height: 420, gutter: 8, bannerWidth: 400, bannerHeight: 200 };
 const PAD = 40;
 
 export function header({ profile, theme, artUri }) {
@@ -18,7 +11,7 @@ export function header({ profile, theme, artUri }) {
   const headline = wrapText(profile.headline, 400, 24, 2);
   const body = [
     panelRect(width, height, theme),
-    imageElement({ x: 0, y: 0, width, height, href: artUri }),
+    imageElement({ x: 0, y: 0, width, height, href: artUri, isPixelArt: true }),
     frameRect(0, 0, width, height, theme),
     textElement({ x: PAD, y: 60, size: 14, tone: 'muted', content: profile.label, tracking: 3 }),
     textElement({ x: PAD - 3, y: 140, size: 80, tone: 'text', content: profile.name }),
@@ -57,81 +50,112 @@ export function statusStrip({ status, theme }) {
 export function sectionLabel({ index, title, action = '', theme }) {
   const width = 880;
   const height = 40;
-  const label = `${index}  ${title}`;
-  const ruleStart = measure(label, 13, 3) + 18;
+  const titleX = measure(index, 13, 3) + 16;
+  const ruleStart = titleX + measure(title, 13, 3) + 18;
   const ruleEnd = action ? width - measure(action, 13) - 18 : width;
   const body = [
-    textElement({ x: 0, y: 25, size: 13, tone: 'muted', content: label, tracking: 3 }),
+    textElement({ x: 0, y: 25, size: 13, tone: 'accent', content: index, tracking: 3 }),
+    textElement({ x: titleX, y: 25, size: 13, tone: 'muted', content: title, tracking: 3 }),
     `<line x1="${ruleStart}" y1="20.5" x2="${ruleEnd}" y2="20.5" stroke="${theme.line}"/>`,
     action
-      ? textElement({ x: width, y: 25, size: 13, tone: 'muted', content: action, anchor: 'end' })
+      ? textElement({ x: width, y: 25, size: 13, tone: 'accent', content: action, anchor: 'end' })
       : '',
   ];
   return svgDocument({ width, height, theme, title: title.toLowerCase(), body: body.join('\n') });
 }
 
-export function projectCard({ repo, position, theme, bannerUri }) {
-  const { width, height, bannerX, bannerY, bannerWidth, bannerHeight } = CARD;
-  const textWidth = width - 2 * PAD;
-  const textTop = bannerY + bannerHeight;
-  const updated = repo.pushedAt.slice(0, 10);
-  const meta = [String(position).padStart(2, '0'), repo.language, `UPDATED ${updated}`]
+export function projectCard({ repo, accent, cta, position, side, theme, bannerUri }) {
+  const { width, height, gutter, bannerWidth, bannerHeight } = CARD;
+  const panelX = side === 'left' ? 0 : gutter;
+  const panelWidth = width - gutter;
+  const inset = 16;
+  const textX = panelX + 24;
+  const textWidth = panelWidth - 48;
+  const textTop = inset + bannerHeight;
+  const meta = [repo.language, repo.pushedAt.slice(0, 10)]
     .filter(Boolean)
     .join(' · ')
     .toUpperCase();
-  const description = wrapText(repo.description, textWidth, 17, 2);
+  const description = wrapText(repo.description, textWidth, 15, 3);
+  const ctaWidth = Math.ceil(measure(cta, 14)) + 32;
   const body = [
-    panelRect(width, height, theme),
+    `<rect x="${panelX + 0.5}" y="0.5" width="${panelWidth - 1}" height="${height - 1}" fill="${theme.panel}" stroke="${theme.line}"/>`,
+    fillRect(panelX, 0, panelWidth, 4, accent),
     imageElement({
-      x: bannerX,
-      y: bannerY,
+      x: panelX + inset,
+      y: inset,
       width: bannerWidth,
       height: bannerHeight,
       href: bannerUri,
     }),
-    frameRect(bannerX, bannerY, bannerWidth, bannerHeight, theme),
+    frameRect(panelX + inset, inset, bannerWidth, bannerHeight, theme),
     textElement({
-      x: PAD,
+      x: textX,
       y: textTop + 38,
-      size: 13,
+      size: 12,
+      tone: 'accent',
+      content: String(position).padStart(2, '0'),
+      tracking: 1.2,
+    }),
+    textElement({
+      x: textX + 26,
+      y: textTop + 38,
+      size: 12,
       tone: 'muted',
       content: meta,
-      tracking: 1.5,
+      tracking: 1.2,
     }),
-    textElement({
-      x: width - PAD,
-      y: textTop + 38,
-      size: 15,
-      tone: 'text',
-      content: `${new URL(repo.url).host} ↗`,
-      anchor: 'end',
-    }),
-    textElement({ x: PAD - 2, y: textTop + 80, size: 34, tone: 'text', content: repo.name }),
+    textElement({ x: textX - 1, y: textTop + 74, size: 28, tone: 'text', content: repo.name }),
     ...description.map((line, lineIndex) =>
       textElement({
-        x: PAD,
-        y: textTop + 112 + lineIndex * 24,
-        size: 17,
+        x: textX,
+        y: textTop + 102 + lineIndex * 21,
+        size: 15,
         tone: 'subtle',
         content: line,
       }),
     ),
+    fillRect(textX, height - 52, ctaWidth, 32, accent),
+    textElement({ x: textX + 16, y: height - 31, size: 14, tone: 'on-brand', content: cta }),
   ];
-  const title = `${repo.name}: ${repo.description}`;
+  const title = `${repo.name}: ${repo.description} ${cta}`;
   return svgDocument({ width, height, theme, title, body: body.join('\n') });
 }
 
 /** One linked line of a list: a post, or a community. */
 export function listRow({ title, meta, description, theme }) {
   const width = 880;
-  const height = 84;
-  const textWidth = width - 2 * PAD - 40;
-  const subline = truncate(`${meta} · ${description}`, textWidth, 14);
+  const height = 88;
+  const chipWidth = Math.ceil(measure(meta, 12, 1.2)) + 20;
+  const titleX = PAD + chipWidth + 14;
+  const textRight = width - PAD - 60;
   const body = [
     panelRect(width, height, theme),
-    textElement({ x: PAD, y: 38, size: 19, tone: 'text', content: truncate(title, textWidth, 19) }),
-    textElement({ x: PAD, y: 62, size: 14, tone: 'muted', content: subline }),
-    textElement({ x: width - PAD, y: 50, size: 20, tone: 'text', content: '→', anchor: 'end' }),
+    fillRect(PAD, 20, chipWidth, 22, theme.chip),
+    textElement({ x: PAD + 10, y: 35, size: 12, tone: 'chip-text', content: meta, tracking: 1.2 }),
+    textElement({
+      x: titleX,
+      y: 37,
+      size: 19,
+      tone: 'text',
+      content: truncate(title, textRight - titleX, 19),
+    }),
+    textElement({
+      x: PAD,
+      y: 66,
+      size: 14,
+      tone: 'muted',
+      content: truncate(description, textRight - PAD, 14),
+    }),
+    fillRect(width - PAD - 36, 26, 36, 36, theme.accent),
+    textElement({
+      x: width - PAD - 18,
+      y: 50,
+      size: 18,
+      tone: 'on-accent',
+      content: '→',
+      anchor: 'middle',
+    }),
   ];
   return svgDocument({ width, height, theme, title, body: body.join('\n') });
 }
