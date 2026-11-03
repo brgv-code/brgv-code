@@ -37,7 +37,7 @@ export function statusStrip({ status, theme }) {
   const detailX = labelX + measure(status.label, 15, 2.5) + 28;
   const body = [
     panelRect(width, height, theme),
-    `<rect x="${PAD}" y="26" width="12" height="12" fill="${theme.live}"/>`,
+    `<rect class="pulse" x="${PAD}" y="26" width="12" height="12" fill="${theme.live}"/>`,
     textElement({ x: labelX, y: 38, size: 15, tone: 'text', content: status.label, tracking: 2.5 }),
     textElement({ x: detailX, y: 38, size: 15, tone: 'muted', content: status.detail }),
     textElement({
@@ -99,24 +99,19 @@ export function projectCard({ repo, position, theme, bannerUri }) {
   return svgDocument({ width, height, theme, title, body: body.join('\n') });
 }
 
-export function postRow({ post, theme }) {
+/** One linked line of a list: a post, or a community. */
+export function listRow({ title, meta, description, theme }) {
   const width = 880;
   const height = 84;
   const textWidth = width - 2 * PAD - 40;
-  const subline = truncate(`${post.date} · ${post.description}`, textWidth, 14);
+  const subline = truncate(`${meta} · ${description}`, textWidth, 14);
   const body = [
     panelRect(width, height, theme),
-    textElement({
-      x: PAD,
-      y: 38,
-      size: 19,
-      tone: 'text',
-      content: truncate(post.title, textWidth, 19),
-    }),
+    textElement({ x: PAD, y: 38, size: 19, tone: 'text', content: truncate(title, textWidth, 19) }),
     textElement({ x: PAD, y: 62, size: 14, tone: 'muted', content: subline }),
     textElement({ x: width - PAD, y: 50, size: 20, tone: 'text', content: '→', anchor: 'end' }),
   ];
-  return svgDocument({ width, height, theme, title: post.title, body: body.join('\n') });
+  return svgDocument({ width, height, theme, title, body: body.join('\n') });
 }
 
 export function linkButton({ link, theme }) {

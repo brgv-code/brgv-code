@@ -7,7 +7,7 @@ import {
   HEADER,
   header,
   linkButton,
-  postRow,
+  listRow,
   projectCard,
   sectionLabel,
   statusStrip,
@@ -59,7 +59,7 @@ async function writePanel(file, render, themes) {
 
 async function build() {
   const config = JSON.parse(await readFile(new URL('profile.config.json', root), 'utf8'));
-  const { themes, profile, status, writing, links } = config;
+  const { themes, profile, status, writing, community, links } = config;
 
   const [projects, posts] = await Promise.all([
     loadProjects(config),
@@ -123,7 +123,24 @@ async function build() {
         file: `post-${index + 1}`,
         alt: `${post.title} (${post.date})`,
         href: post.url,
-        render: (theme) => postRow({ post, theme }),
+        render: (theme) => listRow({ ...post, meta: post.date, theme }),
+      },
+    ]),
+    [
+      {
+        file: 'label-community',
+        alt: 'Community',
+        href: community.url,
+        render: (theme) =>
+          sectionLabel({ index: '03', title: 'COMMUNITY', action: 'community →', theme }),
+      },
+    ],
+    ...community.entries.map((entry, index) => [
+      {
+        file: `community-${index + 1}`,
+        alt: `${entry.title}: ${entry.description}`,
+        href: entry.url,
+        render: (theme) => listRow({ ...entry, theme }),
       },
     ]),
     [
@@ -131,7 +148,7 @@ async function build() {
         file: 'label-contact',
         alt: 'Contact',
         href: profile.url,
-        render: (theme) => sectionLabel({ index: '03', title: 'CONTACT', theme }),
+        render: (theme) => sectionLabel({ index: '04', title: 'CONTACT', theme }),
       },
     ],
     links.map((link, index) => ({

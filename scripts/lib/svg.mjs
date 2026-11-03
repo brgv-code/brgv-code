@@ -10,7 +10,9 @@ function style(theme) {
   return `@font-face{font-family:'Geist Pixel Square';src:url(data:font/woff2;base64,${fontBase64}) format('woff2')}
 text{font-family:'Geist Pixel Square',ui-monospace,monospace}
 .text{fill:${theme.text}}.subtle{fill:${theme.subtle}}.muted{fill:${theme.muted}}
-image{image-rendering:pixelated;image-rendering:crisp-edges}`;
+image{image-rendering:pixelated;image-rendering:crisp-edges}
+@keyframes pulse{50%{opacity:.2}}.pulse{animation:pulse 1.6s steps(1,end) infinite}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}`;
 }
 
 export function svgDocument({ width, height, theme, title, body }) {
