@@ -10,6 +10,7 @@ on:
       - profile.config.json
       - scripts/**
       - fonts/**
+      - assets/**
       - package.json
       - package-lock.json
       - .github/workflows/refresh.yml
