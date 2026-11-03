@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { ditherMask, levels } from '../scripts/lib/dither.mjs';
+import { ditherMask } from '../scripts/lib/dither.mjs';
 import { growthField } from '../scripts/lib/growth-curve.mjs';
 import { renderReadme } from '../scripts/lib/readme.mjs';
 import { parseFeed } from '../scripts/lib/sources.mjs';
@@ -16,12 +16,6 @@ describe('ditherMask', () => {
 
   it('inks half of a mid gray tile', () => {
     assert.equal(sum(ditherMask(new Uint8Array(64).fill(128), 8)), 32);
-  });
-});
-
-describe('levels', () => {
-  it('clips near-white to paper and near-black to ink', () => {
-    assert.deepEqual([...levels(new Uint8Array([10, 25, 225, 240]), 25, 225)], [0, 0, 255, 255]);
   });
 });
 

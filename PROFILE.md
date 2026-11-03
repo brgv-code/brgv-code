@@ -8,7 +8,7 @@ scripts, never the output.
 | Panel | Source |
 |---|---|
 | Header, status strip, contact links | `profile.config.json` |
-| Project cards | GitHub API (description, language, last push, homepage) plus the `banner` image in the config, cropped by `crop` (`[left, top, width, height]` as fractions) and dithered |
+| Project cards | GitHub API (description, language, last push, homepage) plus the `banner` screenshot in the config, cropped by `crop` (`[left, top, width, height]` as fractions). Keep the crop near native size so UI text stays readable |
 | Writing | The newest posts in `writing.feed` (bhargav.dev RSS) |
 | Header chart | `scripts/lib/growth-curve.mjs`, generated, so it only changes when that code does |
 

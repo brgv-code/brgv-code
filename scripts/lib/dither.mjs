@@ -18,32 +18,6 @@ export function ditherMask(gray, width) {
   return mask;
 }
 
-/** Stretches black..white to 0..255, so near-white UI backgrounds dither to clean paper. */
-export function levels(gray, black, white) {
-  const scale = 255 / (white - black);
-  return gray.map((value) => Math.min(255, Math.max(0, Math.round((value - black) * scale))));
-}
-
-/** Crops [left, top, width, height] as fractions of the source, then fills width x height. */
-export async function grayFromImage(source, crop, width, height) {
-  const image = sharp(source);
-  const { width: sourceWidth, height: sourceHeight } = await image.metadata();
-  const [left, top, cropWidth, cropHeight] = crop;
-  const { data } = await image
-    .extract({
-      left: Math.round(left * sourceWidth),
-      top: Math.round(top * sourceHeight),
-      width: Math.round(cropWidth * sourceWidth),
-      height: Math.round(cropHeight * sourceHeight),
-    })
-    .resize(width, height, { fit: 'cover', position: 'centre', kernel: 'lanczos3' })
-    .grayscale()
-    .normalise()
-    .raw()
-    .toBuffer({ resolveWithObject: true });
-  return levels(new Uint8Array(data), 25, 225);
-}
-
 function hexToRgb(hex) {
   const value = Number.parseInt(hex.slice(1), 16);
   return [(value >> 16) & 255, (value >> 8) & 255, value & 255];

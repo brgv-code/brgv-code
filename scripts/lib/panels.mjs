@@ -2,13 +2,14 @@ import { frameRect, imageElement, panelRect, svgDocument, textElement } from './
 import { measure, truncate, wrapText } from './text.mjs';
 
 export const HEADER = { width: 880, height: 280 };
+// The screenshot spans the card so product UI text stays near its native size.
 export const CARD = {
   width: 880,
-  height: 236,
-  bannerX: 540,
+  height: 470,
+  bannerX: 16,
   bannerY: 16,
-  bannerWidth: 324,
-  bannerHeight: 204,
+  bannerWidth: 848,
+  bannerHeight: 300,
 };
 const PAD = 40;
 
@@ -71,13 +72,14 @@ export function sectionLabel({ index, title, action = '', theme }) {
 
 export function projectCard({ repo, position, theme, bannerUri }) {
   const { width, height, bannerX, bannerY, bannerWidth, bannerHeight } = CARD;
-  const textWidth = bannerX - PAD - 32;
+  const textWidth = width - 2 * PAD;
+  const textTop = bannerY + bannerHeight;
   const updated = repo.pushedAt.slice(0, 10);
   const meta = [String(position).padStart(2, '0'), repo.language, `UPDATED ${updated}`]
     .filter(Boolean)
     .join(' · ')
     .toUpperCase();
-  const description = wrapText(repo.description, textWidth, 17, 3);
+  const description = wrapText(repo.description, textWidth, 17, 2);
   const body = [
     panelRect(width, height, theme),
     imageElement({
@@ -88,12 +90,32 @@ export function projectCard({ repo, position, theme, bannerUri }) {
       href: bannerUri,
     }),
     frameRect(bannerX, bannerY, bannerWidth, bannerHeight, theme),
-    textElement({ x: PAD, y: 48, size: 13, tone: 'muted', content: meta, tracking: 1.5 }),
-    textElement({ x: PAD - 2, y: 94, size: 36, tone: 'text', content: repo.name }),
+    textElement({
+      x: PAD,
+      y: textTop + 38,
+      size: 13,
+      tone: 'muted',
+      content: meta,
+      tracking: 1.5,
+    }),
+    textElement({
+      x: width - PAD,
+      y: textTop + 38,
+      size: 15,
+      tone: 'text',
+      content: `${new URL(repo.url).host} ↗`,
+      anchor: 'end',
+    }),
+    textElement({ x: PAD - 2, y: textTop + 80, size: 34, tone: 'text', content: repo.name }),
     ...description.map((line, lineIndex) =>
-      textElement({ x: PAD, y: 130 + lineIndex * 24, size: 17, tone: 'subtle', content: line }),
+      textElement({
+        x: PAD,
+        y: textTop + 112 + lineIndex * 24,
+        size: 17,
+        tone: 'subtle',
+        content: line,
+      }),
     ),
-    textElement({ x: PAD, y: 206, size: 15, tone: 'text', content: `${new URL(repo.url).host} ↗` }),
   ];
   const title = `${repo.name}: ${repo.description}`;
   return svgDocument({ width, height, theme, title, body: body.join('\n') });

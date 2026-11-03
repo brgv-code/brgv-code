@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
-import { ditherMask, grayFromImage, maskToPngDataUri } from './lib/dither.mjs';
+import { ditherMask, maskToPngDataUri } from './lib/dither.mjs';
 import { growthField } from './lib/growth-curve.mjs';
 import {
   CARD,
@@ -13,6 +13,7 @@ import {
   statusStrip,
 } from './lib/panels.mjs';
 import { renderReadme } from './lib/readme.mjs';
+import { screenshotDataUri } from './lib/screenshot.mjs';
 import { fetchImage, fetchPosts, fetchRepo } from './lib/sources.mjs';
 
 const root = new URL('../', import.meta.url);
@@ -32,17 +33,19 @@ async function ditheredArt(gray, width, height, themes) {
 }
 
 async function loadProjects(config) {
-  const bannerWidth = CARD.bannerWidth / DOT;
-  const bannerHeight = CARD.bannerHeight / DOT;
   return Promise.all(
     config.projects.map(async (project) => {
       const [repo, image] = await Promise.all([
         fetchRepo(project.repo, process.env.GITHUB_TOKEN),
         fetchImage(project.banner),
       ]);
-      const gray = await grayFromImage(image, project.crop, bannerWidth, bannerHeight);
-      const banners = await ditheredArt(gray, bannerWidth, bannerHeight, config.themes);
-      return { repo, banners };
+      const bannerUri = await screenshotDataUri(
+        image,
+        project.crop,
+        CARD.bannerWidth,
+        CARD.bannerHeight,
+      );
+      return { repo, bannerUri };
     }),
   );
 }
@@ -100,13 +103,12 @@ async function build() {
           sectionLabel({ index: '01', title: 'PROJECTS', action: 'all repos →', theme }),
       },
     ],
-    ...projects.map(({ repo, banners }, index) => [
+    ...projects.map(({ repo, bannerUri }, index) => [
       {
         file: `project-${index + 1}`,
         alt: `${repo.name}: ${repo.description}`,
         href: repo.url,
-        render: (theme, name) =>
-          projectCard({ repo, position: index + 1, theme, bannerUri: banners[name] }),
+        render: (theme) => projectCard({ repo, position: index + 1, theme, bannerUri }),
       },
     ]),
     [

@@ -18,22 +18,22 @@
     {
       "repo": "open-aeo/open-aeo",
       "banner": "https://bhargav.dev/images/projects/open-aeo/hero.webp",
-      "crop": [0.2, 0.18, 0.6, 0.62]
+      "crop": [0.169, 0.148, 0.6625, 0.461]
     },
     {
       "repo": "brgv-code/jlog",
       "banner": "https://bhargav.dev/images/projects/jlog/4-dashboard.webp",
-      "crop": [0.2, 0.03, 0.62, 0.62]
+      "crop": [0.2, 0.335, 0.792, 0.449]
     },
     {
       "repo": "brgv-code/lumen",
       "banner": "https://readwithlumen.app/og.png",
-      "crop": [0, 0, 1, 1]
+      "crop": [0, 0.175, 1, 0.673]
     },
     {
       "repo": "brgv-code/chunk-lab",
       "banner": "https://bhargav.dev/images/projects/chunk-lab/fig2-strategies-side-by-side.webp",
-      "crop": [0.02, 0.41, 0.52, 0.52]
+      "crop": [0.025, 0.411, 0.75, 0.471]
     }
   ],
   "writing": {
