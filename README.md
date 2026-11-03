@@ -6,13 +6,13 @@
 
 <a href="https://github.com/brgv-code?tab=repositories"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/label-projects-dark.svg?v=40708cca20"><img src="./profile/label-projects-light.svg?v=40708cca20" width="100%" alt="Projects"></picture></a>
 
-<a href="https://open-aeo-dashboard.pages.dev/"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-1-dark.svg?v=469ec780e4"><img src="./profile/project-1-light.svg?v=469ec780e4" width="100%" alt="open-aeo: Self-hosted AEO citation monitor as an MCP server. Track if your domain is cited by Perplexity, runs inside Claude Desktop."></picture></a>
+<a href="https://open-aeo-dashboard.pages.dev/"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-1-dark.svg?v=7d491ac649"><img src="./profile/project-1-light.svg?v=7d491ac649" width="100%" alt="open-aeo: Self-hosted AEO citation monitor as an MCP server. Track if your domain is cited by Perplexity, runs inside Claude Desktop."></picture></a>
 
-<a href="https://jlog.ai"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-2-dark.svg?v=93d044b010"><img src="./profile/project-2-light.svg?v=93d044b010" width="100%" alt="jlog: Open-source job application tracker. Auto-captures applications from LinkedIn, Greenhouse and Lever, then builds a tailored CV."></picture></a>
+<a href="https://jlog.ai"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-2-dark.svg?v=adfcd14aca"><img src="./profile/project-2-light.svg?v=adfcd14aca" width="100%" alt="jlog: Open-source job application tracker. Auto-captures applications from LinkedIn, Greenhouse and Lever, then builds a tailored CV."></picture></a>
 
-<a href="https://readwithlumen.app"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-3-dark.svg?v=3ca0e4c137"><img src="./profile/project-3-light.svg?v=3ca0e4c137" width="100%" alt="lumen: A reading companion for the web. Highlight, take margin notes, ask a model about any passage, and send it to the notes app you already use."></picture></a>
+<a href="https://readwithlumen.app"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-3-dark.svg?v=25124e7b27"><img src="./profile/project-3-light.svg?v=25124e7b27" width="100%" alt="lumen: A reading companion for the web. Highlight, take margin notes, ask a model about any passage, and send it to the notes app you already use."></picture></a>
 
-<a href="https://chunk-lab.streamlit.app"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-4-dark.svg?v=bf78399799"><img src="./profile/project-4-light.svg?v=bf78399799" width="100%" alt="chunk-lab: See and evaluate RAG chunking strategies on your own data. Local, offline, no API keys."></picture></a>
+<a href="https://chunk-lab.streamlit.app"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/project-4-dark.svg?v=de574fafa2"><img src="./profile/project-4-light.svg?v=de574fafa2" width="100%" alt="chunk-lab: See and evaluate RAG chunking strategies on your own data. Local, offline, no API keys."></picture></a>
 
 <a href="https://bhargav.dev/writing"><picture><source media="(prefers-color-scheme: dark)" srcset="./profile/label-writing-dark.svg?v=68c36de080"><img src="./profile/label-writing-light.svg?v=68c36de080" width="100%" alt="Writing"></picture></a>
 
